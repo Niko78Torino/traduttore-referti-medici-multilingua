@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traduttore Referti Medici Multilingua</title>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8268426852108056"
+     crossorigin="anonymous"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        .loader {
+            border-top-color: #3498db;
+            border-right-color: transparent;
+            border-bottom-color: transparent;
+            border-left-color: transparent;
+            -webkit-animation: spin 1s linear infinite, pulse 1.2s ease-in-out infinite;
+            animation: spin 1s linear infinite, pulse 1.2s ease-in-out infinite;
+        }
+        @-webkit-keyframes spin {
+            0% { -webkit-transform: rotate(0deg); }
+            100% { -webkit-transform: rotate(360deg); }
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @-webkit-keyframes pulse {
+            0%, 100% {
+                -webkit-transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                -webkit-transform: scale(1.15);
+                opacity: 0.8;
+            }
+        }
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.15);
+                opacity: 0.8;
+            }
+        }
+        .result-card {
+            margin-top: 1.5rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            background-color: #f9fafb;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .result-card h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #1f2937;
+            border-bottom: 1px solid #d1d5db;
+            padding-bottom: 0.5rem;
+        }
+        .result-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #1f2937;
+        }
+        .result-card ul {
+            list-style-type: disc;
+            list-style-position: inside;
+            padding-left: 1rem;
+            margin-bottom: 1rem;
+        }
+        .result-card li {
+            margin-bottom: 0.5rem;
+        }
+         .result-card strong {
+            font-weight: 600;
+            color: #111827;
+        }
+        #upload-area.disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+        .lang-chip {
+            transition: background-color 0.2s, color 0.2s;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <div class="container mx-auto max-w-3xl p-4 sm:p-6 md:p-8">
+        <header class="text-center mb-8">
+            <h1 data-translate-key="mainTitle" class="text-3xl sm:text-4xl font-bold text-gray-900">Traduttore Referti Medici Multilingua</h1>
+            <p data-translate-key="subtitle" class="mt-2 text-md sm:text-lg text-gray-600">Carica una o più foto dei tuoi referti o ricette per una spiegazione semplice.</p>
+        </header>
+
+        <main>
+            <!-- How it works section -->
+            <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 mb-8">
+                <h2 data-translate-key="howItWorksTitle" class="text-2xl font-bold text-gray-800 mb-4">Come Funziona</h2>
+                <ol class="list-decimal list-inside space-y-2 text-gray-600">
+                    <li data-translate-key="step1"><strong>Carica i tuoi file:</strong> Trascina o seleziona le immagini dei tuoi referti.</li>
+                    <li data-translate-key="step2"><strong>Scegli la lingua:</strong> Clicca su una lingua o selezionala dal menu per ricevere la spiegazione.</li>
+                    <li data-translate-key="step3"><strong>Avvia l'analisi:</strong> Clicca sul pulsante "Analizza Immagini" per avviare il processo.</li>
+                    <li data-translate-key="step4"><strong>Leggi i risultati:</strong> Ricevi un'analisi dettagliata e semplificata del tuo referto.</li>
+                </ol>
+            </div>
+
+            <!-- Supported Languages Section -->
+            <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 mb-8">
+                <h2 data-translate-key="selectLanguageTitle" class="text-2xl font-bold text-gray-800 mb-3">Seleziona la tua lingua</h2>
+                <div id="language-chips-container" class="flex flex-wrap gap-2">
+                    <span data-lang="italiano" class="lang-chip cursor-pointer bg-blue-100 text-blue-800 text-sm font-medium px-2.5 py-0.5 rounded-full">Italiano</span>
+                    <span data-lang="inglese" class="lang-chip cursor-pointer bg-gray-100 text-gray-800 text-sm font-medium px-2.5 py-0.5 rounded-full">Inglese</span>
+                    <span data-lang="francese" class="lang-chip cursor-pointer bg-gray-100 text-gray-800 text-sm font-medium px-2.5 py-0.5 rounded-full">Francese</span>
+                    <span data-lang="tedesco" class="lang-chip cursor-pointer bg-gray-100 text-gray-800 text-sm font-medium px-2.5 py-0.5 rounded-full">Tedesco</span>
+                    <span data-lang="spagnolo" class="lang-chip cursor-pointer bg-gray-100 text-gray-800 text-sm font-medium px-2.5 py-0.5 rounded-full">Spagnolo</span>
+                    <span data-lang="portoghese" class="lang-chip cursor-pointer bg-gray-100 text-gray-800 text-sm font-medium px-2.5 py-0.5 rounded-full">Portoghese</span>
+                    <span data-lang="rumeno" class="lang-chip cursor-pointer bg-gray-100 text-gray-800 text-sm font-medium px-2.5 py-0.5 rounded-full">Rumeno</span>
+                    <span data-lang="russo" class="lang-chip cursor-pointer bg-gray-100 text-gray-800 text-sm font-medium px-2.5 py-0.5 rounded-full">Russo</span>
+                    <span data-lang="albanese" class="lang-chip cursor-pointer bg-gray-100 text-gray-800 text-sm font-medium px-2.5 py-0.5 rounded-full">Albanese</span>
+                    <span data-lang="arabo" class="lang-chip cursor-pointer bg-gray-100 text-gray-800 text-sm font-medium px-2.5 py-0.5 rounded-full">Arabo</span>
+                    <span data-lang="giapponese" class="lang-chip cursor-pointer bg-gray-100 text-gray-800 text-sm font-medium px-2.5 py-0.5 rounded-full">Giapponese</span>
+                    <span data-lang="cinese" class="lang-chip cursor-pointer bg-gray-100 text-gray-800 text-sm font-medium px-2.5 py-0.5 rounded-full">Cinese</span>
+                </div>
+            </div>
+
+            <!-- Donation Section -->
+            <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 mb-8">
+                <h2 data-translate-key="donationTitle" class="text-2xl font-bold text-gray-800 mb-3">Supporta il Progetto</h2>
+                <p data-translate-key="donationText" class="text-gray-600 mb-4">Se trovi utile questo strumento, considera di fare una piccola donazione. Il tuo contributo aiuta a coprire i costi di mantenimento e sviluppo.</p>
+                <a href="https://buy.stripe.com/5kQaEZdwZfVO5x6eFQdjO00" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                    <span data-translate-key="donationButton">Fai una donazione</span>
+                </a>
+            </div>
+
+            <!-- Upload Area -->
+            <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
+                <div id="upload-area" class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-all duration-300">
+                    <input type="file" id="file-input" class="hidden" accept="image/*" multiple>
+                    <div class="flex flex-col items-center">
+                        <svg class="w-12 h-12 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                        </svg>
+                        <p data-translate-key="uploadArea" class="mt-4 text-lg font-semibold text-gray-700">Trascina immagini qui o clicca per selezionare</p>
+                        <p class="mt-1 text-sm text-gray-500">PNG, JPG, GIF, WEBP</p>
+                    </div>
+                </div>
+                <div id="file-list-container" class="mt-4">
+                    <!-- Selected files will be listed here -->
+                </div>
+                <div id="controls-container" class="hidden mt-4 text-center">
+                     <!-- Language Selector -->
+                     <div class="mb-4 text-left">
+                         <label data-translate-key="languageSelectLabel" for="language-select" class="block text-sm font-medium text-gray-700 mb-1">Seleziona la lingua di output:</label>
+                         <select id="language-select" class="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                             <option value="italiano" selected>Italiano</option>
+                             <option value="inglese">Inglese</option>
+                             <option value="francese">Francese</option>
+                             <option value="tedesco">Tedesco</option>
+                             <option value="spagnolo">Spagnolo</option>
+                             <option value="portoghese">Portoghese</option>
+                             <option value="rumeno">Rumeno</option>
+                             <option value="russo">Russo</option>
+                             <option value="albanese">Albanese</option>
+                             <option value="arabo">Arabo</option>
+                             <option value="giapponese">Giapponese</option>
+                             <option value="cinese">Cinese</option>
+                         </select>
+                    </div>
+                    
+                    <!-- Analyze Button -->
+                    <button id="analyze-button" data-translate-key="analyzeButton" class="w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed">
+                        Analizza Immagini
+                    </button>
+                </div>
+            </div>
+
+            <!-- Results Area -->
+            <div id="result-container" class="mt-8">
+                 <!-- Loader -->
+                <div id="loader" class="hidden items-center justify-center flex-col my-6">
+                    <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"></div>
+                    <p id="loader-text" class="text-lg font-medium text-gray-600" data-translate-key="loaderText">Analisi in corso...</p>
+                </div>
+                <!-- Content -->
+                <div id="result-content"></div>
+                <!-- Error Message -->
+                <div id="error-message" class="hidden p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg"></div>
+            </div>
+
+            <!-- Reset Button Container -->
+            <div id="reset-container" class="text-center mt-6 hidden">
+                <button id="reset-button" data-translate-key="resetButton" class="px-8 py-3 bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-300">
+                    Analizza Nuovi Referti
+                </button>
+            </div>
+
+            <!-- Disclaimer -->
+            <div id="disclaimer" class="mt-8 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 rounded-r-lg">
+                <h3 data-translate-key="disclaimerTitle" class="font-bold">Disclaimer Importante</h3>
+                <p data-translate-key="disclaimerText" class="mt-1 text-sm">Questa applicazione fornisce una spiegazione generata da un'intelligenza artificiale e non sostituisce in alcun modo il parere di un medico. Le informazioni non devono essere usate per autodiagnosi o automedicazione. Consulta sempre il tuo medico per qualsiasi questione relativa alla tua salute.</p>
+            </div>
+        </main>
+
+        <footer class="text-center mt-12 mb-6">
+            <p data-translate-key="footer" class="text-sm text-gray-500">&copy; 2025 Nicola Nicolaci. Tutti i diritti riservati.</p>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        // DOM Elements
+        const uploadArea = document.getElementById('upload-area');
+        const fileInput = document.getElementById('file-input');
+        const fileListContainer = document.getElementById('file-list-container');
+        const controlsContainer = document.getElementById('controls-container');
+        const analyzeButton = document.getElementById('analyze-button');
+        const languageSelect = document.getElementById('language-select');
+        const languageChipsContainer = document.getElementById('language-chips-container');
+        const resultContainer = document.getElementById('result-container');
+        const loader = document.getElementById('loader');
+        const loaderText = document.getElementById('loader-text');
+        const resultContent = document.getElementById('result-content');
+        const errorMessage = document.getElementById('error-message');
+        const resetContainer = document.getElementById('reset-container');
+        const resetButton = document.getElementById('reset-button');
+        
+        let selectedFiles = [];
+
+        // --- TRANSLATION DATA ---
+        const translations = {
+            'italiano': {
+                mainTitle: "Traduttore Referti Medici Multilingua",
+                subtitle: "Carica una o più foto dei tuoi referti o ricette per una spiegazione semplice.",
+                howItWorksTitle: "Come Funziona",
+                step1: "<strong>Carica i tuoi file:</strong> Trascina o seleziona le immagini dei tuoi referti.",
+                step2: "<strong>Scegli la lingua:</strong> Clicca su una lingua o selezionala dal menu per ricevere la spiegazione.",
+                step3: "<strong>Avvia l'analisi:</strong> Clicca sul pulsante \"Analizza Immagini\" per avviare il processo.",
+                step4: "<strong>Leggi i risultati:</strong> Ricevi un'analisi dettagliata e semplificata del tuo referto.",
+                selectLanguageTitle: "Seleziona la tua lingua",
+                donationTitle: "Supporta il Progetto",
+                donationText: "Se trovi utile questo strumento, considera di fare una piccola donazione. Il tuo contributo aiuta a coprire i costi di mantenimento e sviluppo.",
+                donationButton: "Fai una donazione",
+                uploadArea: "Trascina immagini qui o clicca per selezionare",
+                languageSelectLabel: "Seleziona la lingua di output:",
+                analyzeButton: "Analizza Immagini",
+                loaderText: "Analisi in corso...",
+                resetButton: "Analizza Nuovi Referti",
+                disclaimerTitle: "Disclaimer Importante",
+                disclaimerText: "Questa applicazione fornisce una spiegazione generata da un'intelligenza artificiale e non sostituisce in alcun modo il parere di un medico. Le informazioni non devono essere usate per autodiagnosi o automedicazione. Consulta sempre il tuo medico per qualsiasi questione relativa alla tua salute.",
+                footer: "&copy; 2025 Nicola Nicolaci. Tutti i diritti riservati.",
+                resultTitle: "Risultati per: ${fileName}",
+                errorTitle: "Errore nell'analisi di: ${fileName}",
+                errorDetails: "Si è verificato un problema durante l'analisi. Dettagli: ${errorMessage}"
+            },
+            'inglese': {
+                mainTitle: "Multilingual Medical Report Translator",
+                subtitle: "Upload one or more photos of your reports or prescriptions for a simple explanation.",
+                howItWorksTitle: "How It Works",
+                step1: "<strong>Upload your files:</strong> Drag or select the images of your reports.",
+                step2: "<strong>Choose the language:</strong> Click a language or select it from the menu to receive the explanation.",
+                step3: "<strong>Start the analysis:</strong> Click the \"Analyze Images\" button to start the process.",
+                step4: "<strong>Read the results:</strong> Receive a detailed and simplified analysis of your report.",
+                selectLanguageTitle: "Select your language",
+                donationTitle: "Support the Project",
+                donationText: "If you find this tool useful, please consider making a small donation. Your contribution helps cover maintenance and development costs.",
+                donationButton: "Make a donation",
+                uploadArea: "Drag images here or click to select",
+                languageSelectLabel: "Select the output language:",
+                analyzeButton: "Analyze Images",
+                loaderText: "Analysis in progress...",
+                resetButton: "Analyze New Reports",
+                disclaimerTitle: "Important Disclaimer",
+                disclaimerText: "This application provides an explanation generated by artificial intelligence and does not in any way replace the advice of a doctor. The information should not be used for self-diagnosis or self-medication. Always consult your doctor for any health-related questions.",
+                footer: "&copy; 2025 Nicola Nicolaci. All rights reserved.",
+                resultTitle: "Results for: ${fileName}",
+                errorTitle: "Error analyzing: ${fileName}",
+                errorDetails: "A problem occurred during the analysis. Details: ${errorMessage}"
+            },
+            'spagnolo': {
+                mainTitle: "Traductor Multilingüe de Informes Médicos",
+                subtitle: "Sube una o más fotos de tus informes o recetas para una explicación sencilla.",
+                howItWorksTitle: "Cómo Funciona",
+                step1: "<strong>Sube tus archivos:</strong> Arrastra o selecciona las imágenes de tus informes.",
+                step2: "<strong>Elige el idioma:</strong> Haz clic en un idioma o selecciónalo del menú para recibir la explicación.",
+                step3: "<strong>Inicia el análisis:</strong> Haz clic en el botón \"Analizar Imágenes\" para iniciar il processo.",
+                step4: "<strong>Lee los resultados:</strong> Recibe un análisis detallado y simplificado de tu informe.",
+                selectLanguageTitle: "Selecciona tu idioma",
+                donationTitle: "Apoya el Proyecto",
+                donationText: "Si encuentras útil esta herramienta, considera hacer una pequeña donación. Tu contribución ayuda a cubrir los costos de mantenimiento y desarrollo.",
+                donationButton: "Hacer una donación",
+                uploadArea: "Arrastra imágenes aquí o haz clic para seleccionar",
+                languageSelectLabel: "Selecciona el idioma de salida:",
+                analyzeButton: "Analizar Imágenes",
+                loaderText: "Análisis en curso...",
+                resetButton: "Analizar Nuevos Informes",
+                disclaimerTitle: "Descargo de Responsabilidad Importante",
+                disclaimerText: "Esta aplicación proporciona una explicación generada por inteligencia artificial y no reemplaza de ninguna manera el consejo de un médico. La información no debe usarse para autodiagnóstico o automedicación. Consulta siempre a tu médico para cualquier pregunta relacionada con tu salud.",
+                footer: "&copy; 2025 Nicola Nicolaci. Todos los derechos reservados.",
+                resultTitle: "Resultados para: ${fileName}",
+                errorTitle: "Error al analizar: ${fileName}",
+                errorDetails: "Ocurrió un problema durante el análisis. Detalles: ${errorMessage}"
+            },
+            'francese': {
+                mainTitle: "Traducteur Multilingue de Rapports Médicaux",
+                subtitle: "Téléchargez une ou plusieurs photos de vos rapports ou ordonnances pour une explication simple.",
+                howItWorksTitle: "Comment ça marche",
+                step1: "<strong>Téléchargez vos fichiers:</strong> Faites glisser ou sélectionnez les images de vos rapports.",
+                step2: "<strong>Choisissez la langue:</strong> Cliquez sur une langue ou sélectionnez-la dans le menu pour recevoir l'explication.",
+                step3: "<strong>Lancez l'analyse:</strong> Cliquez sur le bouton \"Analyser les Images\" pour démarrer le processus.",
+                step4: "<strong>Lisez les résultats:</strong> Recevez une analyse détaillée et simplifiée de votre rapport.",
+                selectLanguageTitle: "Sélectionnez votre langue",
+                donationTitle: "Soutenir le Projet",
+                donationText: "Si vous trouvez cet outil utile, veuillez envisager de faire un petit don. Votre contribution aide à couvrir les frais de maintenance et de développement.",
+                donationButton: "Faire un don",
+                uploadArea: "Faites glisser les images ici ou cliquez pour sélectionner",
+                languageSelectLabel: "Sélectionnez la langue de sortie:",
+                analyzeButton: "Analyser les Images",
+                loaderText: "Analyse en cours...",
+                resetButton: "Analyser de Nouveaux Rapports",
+                disclaimerTitle: "Avis de Non-responsabilité Important",
+                disclaimerText: "Cette application fournit une explication générée par une intelligence artificielle et ne remplace en aucun cas l'avis d'un médecin. Les informations ne doivent pas être utilisées pour l'autodiagnostic ou l'automédication. Consultez toujours votre médecin pour toute question relative à votre santé.",
+                footer: "&copy; 2025 Nicola Nicolaci. Tous droits réservés.",
+                resultTitle: "Résultats pour : ${fileName}",
+                errorTitle: "Erreur lors de l'analyse de : ${fileName}",
+                errorDetails: "Un problème est survenu lors de l'analyse. Détails : ${errorMessage}"
+            },
+            'tedesco': {
+                mainTitle: "Mehrsprachiger Übersetzer für medizinische Berichte",
+                subtitle: "Laden Sie ein oder mehrere Fotos Ihrer Berichte oder Rezepte für eine einfache Erklärung hoch.",
+                howItWorksTitle: "Wie es funktioniert",
+                step1: "<strong>Laden Sie Ihre Dateien hoch:</strong> Ziehen Sie die Bilder Ihrer Berichte oder wählen Sie sie aus.",
+                step2: "<strong>Wählen Sie die Sprache:</strong> Klicken Sie auf eine Sprache oder wählen Sie sie aus dem Menü aus, um die Erklärung zu erhalten.",
+                step3: "<strong>Starten Sie die Analyse:</strong> Klicken Sie auf die Schaltfläche \"Bilder analysieren\", um den Vorgang zu starten.",
+                step4: "<strong>Lesen Sie die Ergebnisse:</strong> Erhalten Sie eine detaillierte und vereinfachte Analyse Ihres Berichts.",
+                selectLanguageTitle: "Wähle deine Sprache",
+                donationTitle: "Unterstütze das Projekt",
+                donationText: "Wenn Sie dieses Tool nützlich finden, ziehen Sie bitte eine kleine Spende in Betracht. Ihr Beitrag hilft, die Wartungs- und Entwicklungskosten zu decken.",
+                donationButton: "Spenden",
+                uploadArea: "Bilder hierher ziehen oder zum Auswählen klicken",
+                languageSelectLabel: "Wählen Sie die Ausgabesprache:",
+                analyzeButton: "Bilder analysieren",
+                loaderText: "Analyse läuft...",
+                resetButton: "Neue Berichte analysieren",
+                disclaimerTitle: "Wichtiger Haftungsausschluss",
+                disclaimerText: "Diese Anwendung bietet eine von künstlicher Intelligenz generierte Erklärung und ersetzt in keiner Weise den Rat eines Arztes. Die Informationen sollten nicht zur Selbstdiagnose oder Selbstmedikation verwendet werden. Konsultieren Sie bei gesundheitlichen Fragen immer Ihren Arzt.",
+                footer: "&copy; 2025 Nicola Nicolaci. Alle Rechte vorbehalten.",
+                resultTitle: "Ergebnisse für: ${fileName}",
+                errorTitle: "Fehler bei der Analyse von: ${fileName}",
+                errorDetails: "Während der Analyse ist ein Problem aufgetreten. Details: ${errorMessage}"
+            },
+            'portoghese': {
+                mainTitle: "Tradutor Multilíngue de Relatórios Médicos",
+                subtitle: "Carregue uma ou mais fotos de seus relatórios ou receitas para uma explicação simples.",
+                howItWorksTitle: "Como Funciona",
+                step1: "<strong>Carregue seus arquivos:</strong> Arraste ou selecione as imagens de seus relatórios.",
+                step2: "<strong>Escolha o idioma:</strong> Clique em um idioma ou selecione-o no menu para receber a explicação.",
+                step3: "<strong>Inicie a análise:</strong> Clique no botão \"Analisar Imagens\" para iniciar o processo.",
+                step4: "<strong>Leia os resultados:</strong> Receba uma análise detalhada e simplificada do seu relatório.",
+                selectLanguageTitle: "Selecione seu idioma",
+                donationTitle: "Apoie o Projeto",
+                donationText: "Se você acha esta ferramenta útil, considere fazer uma pequena doação. Sua contribuição ajuda a cobrir os custos de manutenção e desenvolvimento.",
+                donationButton: "Fazer uma doação",
+                uploadArea: "Arraste as imagens para cá ou clique para selecionar",
+                languageSelectLabel: "Selecione o idioma de saída:",
+                analyzeButton: "Analisar Imagens",
+                loaderText: "Análise em andamento...",
+                resetButton: "Analisar Novos Relatórios",
+                disclaimerTitle: "Aviso Importante",
+                disclaimerText: "Este aplicativo fornece uma explicação gerada por inteligência artificial e não substitui de forma alguma o conselho de um médico. As informações não devem ser usadas para autodiagnóstico ou automedicação. Sempre consulte seu médico para qualquer questão relacionada à sua saúde.",
+                footer: "&copy; 2025 Nicola Nicolaci. Todos os direitos reservados.",
+                resultTitle: "Resultados para: ${fileName}",
+                errorTitle: "Erro ao analisar: ${fileName}",
+                errorDetails: "Ocorreu um problema durante a análise. Detalhes: ${errorMessage}"
+            },
+            'rumeno': {
+                mainTitle: "Traducător Multilingv de Rapoarte Medicale",
+                subtitle: "Încărcați una sau mai multe fotografii ale rapoartelor sau rețetelor dvs. pentru o explicație simplă.",
+                howItWorksTitle: "Cum Funcționează",
+                step1: "<strong>Încărcați fișierele:</strong> Trageți sau selectați imaginile rapoartelor dvs.",
+                step2: "<strong>Alegeți limba:</strong> Faceți clic pe o limbă sau selectați-o din meniu pentru a primi explicația.",
+                step3: "<strong>Începeți analiza:</strong> Faceți clic pe butonul \"Analizați Imaginile\" pentru a începe procesul.",
+                step4: "<strong>Citiți rezultatele:</strong> Primiți o analiză detaliată și simplificată a raportului dvs.",
+                selectLanguageTitle: "Selectați limba dvs.",
+                donationTitle: "Susțineți Proiectul",
+                donationText: "Dacă găsiți acest instrument util, vă rugăm să luați în considerare o mică donație. Contribuția dvs. ajută la acoperirea costurilor de întreținere și dezvoltare.",
+                donationButton: "Faceți o donație",
+                uploadArea: "Trageți imaginile aici sau faceți clic pentru a selecta",
+                languageSelectLabel: "Selectați limba de ieșire:",
+                analyzeButton: "Analizați Imaginile",
+                loaderText: "Analiză în curs...",
+                resetButton: "Analizați Rapoarte Noi",
+                disclaimerTitle: "Declinare de Responsabilitate Importantă",
+                disclaimerText: "Această aplicație oferă o explicație generată de inteligența artificială și nu înlocuiește în niciun fel sfatul unui medic. Informațiile nu trebuie utilizate pentru autodiagnosticare sau automedicație. Consultați întotdeauna medicul pentru orice problemă legată de sănătate.",
+                footer: "&copy; 2025 Nicola Nicolaci. Toate drepturile rezervate.",
+                resultTitle: "Rezultate pentru: ${fileName}",
+                errorTitle: "Eroare la analizarea: ${fileName}",
+                errorDetails: "A apărut o problemă în timpul analizei. Detalii: ${errorMessage}"
+            },
+            'russo': {
+                mainTitle: "Многоязычный Переводчик Медицинских Отчетов",
+                subtitle: "Загрузите одну или несколько фотографий ваших отчетов или рецептов для простого объяснения.",
+                howItWorksTitle: "Как это работает",
+                step1: "<strong>Загрузите файлы:</strong> Перетащите или выберите изображения ваших отчетов.",
+                step2: "<strong>Выберите язык:</strong> Нажмите на язык или выберите его в меню, чтобы получить объяснение.",
+                step3: "<strong>Начать анализ:</strong> Нажмите кнопку \"Анализировать изображения\", чтобы начать процесс.",
+                step4: "<strong>Прочтите результаты:</strong> Получите подробный и упрощенный анализ вашего отчета.",
+                selectLanguageTitle: "Выберите ваш язык",
+                donationTitle: "Поддержите проект",
+                donationText: "Если вы находите этот инструмент полезным, пожалуйста, рассмотрите возможность небольшого пожертвования. Ваш вклад помогает покрыть расходы на обслуживание и разработку.",
+                donationButton: "Сделать пожертвование",
+                uploadArea: "Перетащите изображения сюда или нажмите для выбора",
+                languageSelectLabel: "Выберите язык вывода:",
+                analyzeButton: "Анализировать изображения",
+                loaderText: "Идет анализ...",
+                resetButton: "Анализировать новые отчеты",
+                disclaimerTitle: "Важное замечание",
+                disclaimerText: "Это приложение предоставляет объяснение, сгенерированное искусственным интеллектом, и никоим образом не заменяет консультацию врача. Информация не должна использоваться для самодиагностики или самолечения. Всегда консультируйтесь с врачом по любым вопросам, связанным со здоровьем.",
+                footer: "&copy; 2025 Никола Николачи. Все права защищены.",
+                resultTitle: "Результаты для: ${fileName}",
+                errorTitle: "Ошибка при анализе: ${fileName}",
+                errorDetails: "Во время анализа произошла проблема. Детали: ${errorMessage}"
+            },
+            'albanese': {
+                mainTitle: "Përkthyes Shumëgjuhësh i Raporteve Mjekësore",
+                subtitle: "Ngarkoni një ose më shumë foto të raporteve ose recetave tuaja për një shpjegim të thjeshtë.",
+                howItWorksTitle: "Si funksionon",
+                step1: "<strong>Ngarkoni skedarët tuaj:</strong> Zvarritni ose zgjidhni imazhet e raporteve tuaja.",
+                step2: "<strong>Zgjidhni gjuhën:</strong> Klikoni në një gjuhë ose zgjidheni nga menuja për të marrë shpjegimin.",
+                step3: "<strong>Filloni analizën:</strong> Klikoni butonin \"Analizo Imazhet\" për të filluar procesin.",
+                step4: "<strong>Lexoni rezultatet:</strong> Merrni një analizë të detajuar dhe të thjeshtuar të raportit tuaj.",
+                selectLanguageTitle: "Zgjidhni gjuhën tuaj",
+                donationTitle: "Mbështetni Projektin",
+                donationText: "Nëse e gjeni këtë mjet të dobishëm, ju lutemi konsideroni të bëni një donacion të vogël. Kontributi juaj ndihmon në mbulimin e kostove të mirëmbajtjes dhe zhvillimit.",
+                donationButton: "Bëni një donacion",
+                uploadArea: "Zvarritni imazhet këtu ose klikoni për të zgjedhur",
+                languageSelectLabel: "Zgjidhni gjuhën e daljes:",
+                analyzeButton: "Analizo Imazhet",
+                loaderText: "Analiza në proces...",
+                resetButton: "Analizo Raporte të Reja",
+                disclaimerTitle: "Mohim i Rëndësishëm",
+                disclaimerText: "Ky aplikacion ofron një shpjegim të gjeneruar nga inteligjenca artificiale dhe nuk zëvendëson në asnjë mënyrë këshillën e një mjeku. Informacioni nuk duhet të përdoret për vetë-diagnozë ose vetë-mjekim. Gjithmonë konsultohuni me mjekun tuaj për çdo çështje që lidhet me shëndetin.",
+                footer: "&copy; 2025 Nicola Nicolaci. Të gjitha të drejtat e rezervuara.",
+                resultTitle: "Rezultatet për: ${fileName}",
+                errorTitle: "Gabim gjatë analizimit: ${fileName}",
+                errorDetails: "Ndodhi një problem gjatë analizës. Detajet: ${errorMessage}"
+            },
+            'arabo': {
+                mainTitle: "مترجم تقارير طبية متعدد اللغات",
+                subtitle: "قم بتحميل صورة أو أكثر من تقاريرك أو وصفاتك الطبية للحصول على شرح بسيط.",
+                howItWorksTitle: "كيف يعمل",
+                step1: "<strong>تحميل ملفاتك:</strong> اسحب أو حدد صور تقاريرك.",
+                step2: "<strong>اختر اللغة:</strong> انقر على لغة أو حددها من القائمة لتلقي الشرح.",
+                step3: "<strong>بدء التحليل:</strong> انقر على زر \"تحليل الصور\" لبدء العملية.",
+                step4: "<strong>اقرأ النتائج:</strong> احصل على تحليل مفصل ومبسط لتقريرك.",
+                selectLanguageTitle: "اختر لغتك",
+                donationTitle: "ادعم المشروع",
+                donationText: "إذا وجدت هذه الأداة مفيدة، يرجى التفكير في تقديم تبرع صغير. تساهم مساهمتك في تغطية تكاليف الصيانة والتطوير.",
+                donationButton: "تبرع الآن",
+                uploadArea: "اسحب الصور هنا أو انقر للتحديد",
+                languageSelectLabel: "حدد لغة الإخراج:",
+                analyzeButton: "تحليل الصور",
+                loaderText: "التحليل جار...",
+                resetButton: "تحليل تقارير جديدة",
+                disclaimerTitle: "إخلاء مسؤولية هام",
+                disclaimerText: "يوفر هذا التطبيق شرحًا تم إنشاؤه بواسطة الذكاء الاصطناعي ولا يحل بأي حال من الأحوال محل نصيحة الطبيب. لا ينبغي استخدام المعلومات للتشخيص الذاتي أو العلاج الذاتي. استشر طبيبك دائمًا بشأن أي أسئلة تتعلق بالصحة.",
+                footer: "&copy; 2025 نقولا نيقولاتشي. جميع الحقوق محفوظة.",
+                resultTitle: "نتائج لـ: ${fileName}",
+                errorTitle: "خطأ في تحليل: ${fileName}",
+                errorDetails: "حدثت مشكلة أثناء التحليل. التفاصيل: ${errorMessage}"
+            },
+            'giapponese': {
+                mainTitle: "多言語医療レポート翻訳",
+                subtitle: "レポートや処方箋の写真を1枚以上アップロードして、簡単な説明を受けましょう。",
+                howItWorksTitle: "使い方",
+                step1: "<strong>ファイルをアップロード:</strong> レポートの画像をドラッグするか選択します。",
+                step2: "<strong>言語を選択:</strong> 言語をクリックするかメニューから選択して、説明を受け取ります。",
+                step3: "<strong>分析を開始:</strong> 「画像を分析」ボタンをクリックしてプロセスを開始します。",
+                step4: "<strong>結果を読む:</strong> レポートの詳細で簡単な分析を受け取ります。",
+                selectLanguageTitle: "言語を選択してください",
+                donationTitle: "プロジェクトを支援",
+                donationText: "このツールが役立つと思われた場合は、少額の寄付をご検討ください。皆様のご支援が、維持管理費や開発費の助けとなります。",
+                donationButton: "寄付する",
+                uploadArea: "ここに画像をドラッグするか、クリックして選択",
+                languageSelectLabel: "出力言語を選択してください：",
+                analyzeButton: "画像を分析",
+                loaderText: "分析中...",
+                resetButton: "新しいレポートを分析",
+                disclaimerTitle: "重要事項",
+                disclaimerText: "このアプリケーションは、人工知能によって生成された説明を提供するものであり、いかなる形でも医師の助言に代わるものではありません。この情報は、自己診断や自己治療に使用しないでください。健康に関する質問については、必ず医師に相談してください。",
+                footer: "&copy; 2025 ニコラ・ニコラチ. 全著作権所有.",
+                resultTitle: "結果：${fileName}",
+                errorTitle: "分析エラー：${fileName}",
+                errorDetails: "分析中に問題が発生しました。詳細：${errorMessage}"
+            },
+            'cinese': {
+                mainTitle: "多语言医疗报告翻译器",
+                subtitle: "上传一份或多份您的报告或处方的照片，以获得简单的解释。",
+                howItWorksTitle: "如何操作",
+                step1: "<strong>上传文件:</strong> 拖动或选择您的报告图像。",
+                step2: "<strong>选择语言:</strong> 单击一种语言或从菜单中选择以接收解释。",
+                step3: "<strong>开始分析:</strong> 单击“分析图像”按钮开始该过程。",
+                step4: "<strong>阅读结果:</strong> 接收您报告的详细和简化分析。",
+                selectLanguageTitle: "选择你的语言",
+                donationTitle: "支持项目",
+                donationText: "如果您觉得这个工具有用，请考虑进行小额捐赠。您的贡献有助于支付维护和开发成本。",
+                donationButton: "进行捐赠",
+                uploadArea: "将图像拖到此处或单击以选择",
+                languageSelectLabel: "选择输出语言：",
+                analyzeButton: "分析图像",
+                loaderText: "分析中...",
+                resetButton: "分析新报告",
+                disclaimerTitle: "重要免责声明",
+                disclaimerText: "本应用程序提供由人工智能生成的解释，不能以任何方式替代医生的建议。该信息不应用于自我诊断或自我用药。有关任何健康相关问题，请务务必咨询您的医生。",
+                footer: "&copy; 2025 尼古拉·尼古拉奇. 版权所有.",
+                resultTitle: "结果：${fileName}",
+                errorTitle: "分析错误：${fileName}",
+                errorDetails: "分析期间出现问题。详细信息：${errorMessage}"
+            }
+        };
+
+        // --- TRANSLATION FUNCTION ---
+        function translatePage(lang) {
+            const langTranslations = translations[lang];
+            if (!langTranslations) {
+                console.warn(`No translations found for language: ${lang}`);
+                // Fallback to Italian if the selected language is not found
+                translatePage('italiano');
+                return;
+            }
+
+            document.querySelectorAll('[data-translate-key]').forEach(el => {
+                const key = el.dataset.translateKey;
+                if (langTranslations[key]) {
+                    el.innerHTML = langTranslations[key];
+                }
+            });
+        }
+        
+        // --- FILE UPLOAD LOGIC ---
+        uploadArea.addEventListener('click', () => fileInput.click());
+        uploadArea.addEventListener('dragover', (event) => {
+            event.preventDefault();
+            uploadArea.classList.add('border-blue-500', 'bg-blue-50');
+        });
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('border-blue-500', 'bg-blue-50');
+        });
+        uploadArea.addEventListener('drop', (event) => {
+            event.preventDefault();
+            uploadArea.classList.remove('border-blue-500', 'bg-blue-50');
+            handleFiles(event.dataTransfer.files);
+        });
+        fileInput.addEventListener('change', (event) => {
+            handleFiles(event.target.files);
+        });
+
+        // --- LANGUAGE SELECTION LOGIC ---
+        function updateLanguageSelection(selectedLang) {
+            // Update the dropdown
+            languageSelect.value = selectedLang;
+
+            // Update the visual style of the chips
+            const chips = languageChipsContainer.querySelectorAll('.lang-chip');
+            chips.forEach(chip => {
+                if (chip.dataset.lang === selectedLang) {
+                    chip.classList.remove('bg-gray-100', 'text-gray-800');
+                    chip.classList.add('bg-blue-100', 'text-blue-800');
+                } else {
+                    chip.classList.remove('bg-blue-100', 'text-blue-800');
+                    chip.classList.add('bg-gray-100', 'text-gray-800');
+                }
+            });
+
+            // Translate the page content
+            translatePage(selectedLang);
+        }
+
+        languageChipsContainer.addEventListener('click', (event) => {
+            const clickedChip = event.target.closest('.lang-chip');
+            if (clickedChip) {
+                const lang = clickedChip.dataset.lang;
+                updateLanguageSelection(lang);
+            }
+        });
+
+        languageSelect.addEventListener('change', (event) => {
+            updateLanguageSelection(event.target.value);
+        });
+
+
+        // --- ANALYSIS LOGIC ---
+        analyzeButton.addEventListener('click', async () => {
+            if (selectedFiles.length === 0) return;
+
+            // Visually indicate processing and disable further uploads
+            uploadArea.classList.add('disabled');
+            fileListContainer.classList.add('hidden');
+            controlsContainer.classList.add('hidden');
+
+            loader.style.display = 'flex';
+            resultContent.innerHTML = '';
+            errorMessage.classList.add('hidden');
+            errorMessage.textContent = '';
+            
+            const selectedLanguage = languageSelect.value;
+            loaderText.textContent = translations[selectedLanguage]?.loaderText || "Analysis in progress...";
+
+            for (let i = 0; i < selectedFiles.length; i++) {
+                const file = selectedFiles[i];
+                const loaderStatusText = translations[selectedLanguage]?.loaderText || "Analysis in progress...";
+                loaderText.textContent = `${loaderStatusText.replace('...','')} ${file.name} (${i + 1} of ${selectedFiles.length})...`;
+                try {
+                    // Call the analysis function for each file
+                    const analysisResult = await analyzeSingleFile(file, selectedLanguage);
+                    const resultCard = document.createElement('div');
+                    resultCard.className = 'result-card';
+                    // Populate the card with the file name and the parsed HTML result
+                    const resultTitle = translations[selectedLanguage]?.resultTitle || `Risultati per: \${fileName}`;
+                    resultCard.innerHTML = `<h2>${resultTitle.replace('${fileName}', file.name)}</h2>` + analysisResult;
+                    resultContent.appendChild(resultCard);
+                } catch (error) {
+                    // If an error occurs, display an error card
+                    const errorCard = document.createElement('div');
+                    errorCard.className = 'result-card';
+                    const errorTitle = translations[selectedLanguage]?.errorTitle || `Errore nell'analisi di: \${fileName}`;
+                    const errorDetails = translations[selectedLanguage]?.errorDetails || `Si è verificato un problema durante l'analisi. Dettagli: \${errorMessage}`;
+                    errorCard.innerHTML = `
+                        <h2>${errorTitle.replace('${fileName}', file.name)}</h2>
+                        <p class="text-red-600">${errorDetails.replace('${errorMessage}', error.message)}</p>
+                    `;
+                    resultContent.appendChild(errorCard);
+                }
+            }
+            
+            loader.style.display = 'none';
+            resetContainer.classList.remove('hidden'); // Show the reset button
+        });
+
+        // --- RESET LOGIC ---
+        resetButton.addEventListener('click', () => {
+            selectedFiles = [];
+            resultContent.innerHTML = '';
+            errorMessage.classList.add('hidden');
+            errorMessage.textContent = '';
+            fileListContainer.innerHTML = '';
+            controlsContainer.classList.add('hidden');
+            resetContainer.classList.add('hidden');
+            fileInput.value = null; // Allow selecting the same file again
+            uploadArea.classList.remove('disabled'); // Re-enable upload area
+            fileListContainer.classList.remove('hidden'); // Show file list area again
+            updateLanguageSelection('italiano'); // Reset to default language
+        });
+
+        function handleFiles(files) {
+            Array.from(files).forEach(file => {
+                // Prevent duplicate files from being added
+                if (!selectedFiles.some(f => f.name === file.name && f.size === file.size)) {
+                    selectedFiles.push(file);
+                }
+            });
+            renderFileList();
+        }
+
+        function renderFileList() {
+            fileListContainer.innerHTML = '';
+            if (selectedFiles.length > 0) {
+                const list = document.createElement('ul');
+                list.className = 'space-y-2';
+                selectedFiles.forEach((file, index) => {
+                    const listItem = document.createElement('li');
+                    listItem.className = 'flex items-center justify-between bg-gray-100 p-2 rounded-md';
+                    listItem.innerHTML = `
+                        <span class="text-gray-700 text-sm font-medium truncate mr-2">${file.name}</span>
+                        <button data-index="${index}" class="remove-file-btn ml-2 p-1 text-gray-500 hover:text-red-600 focus:outline-none">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                    `;
+                    list.appendChild(listItem);
+                });
+                fileListContainer.appendChild(list);
+                controlsContainer.classList.remove('hidden');
+            } else {
+                controlsContainer.classList.add('hidden');
+            }
+        }
+        
+        fileListContainer.addEventListener('click', function(event) {
+            const removeButton = event.target.closest('.remove-file-btn');
+            if (removeButton) {
+                const indexToRemove = parseInt(removeButton.dataset.index, 10);
+                selectedFiles.splice(indexToRemove, 1);
+                renderFileList();
+            }
+        });
+
+        // --- UPDATED API LOGIC FOR NETLIFY ---
+        async function analyzeSingleFile(imageFile, language) {
+            const base64ImageData = await toBase64(imageFile);
+
+            // L'URL della nostra Netlify Function.
+            const functionUrl = '/.netlify/functions/analyze';
+
+            try {
+                const response = await fetch(functionUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        imageData: base64ImageData,
+                        imageType: imageFile.type,
+                        language: language
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || `La richiesta al server è fallita con stato ${response.status}`);
+                }
+
+                const result = await response.json();
+                
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    return marked.parse(text);
+                } else {
+                    if (result.promptFeedback) {
+                        console.error("Prompt Feedback:", result.promptFeedback);
+                        throw new Error("L'analisi è stata bloccata a causa di restrizioni di sicurezza.");
+                    }
+                    throw new Error("La risposta dell'API non è valida o è vuota.");
+                }
+
+            } catch (error) {
+                console.error("Errore durante la chiamata alla Netlify Function:", error);
+                throw error; // Rilancia l'errore per mostrarlo nell'interfaccia utente.
+            }
+        }
+
+        // Helper function to convert a file to a Base64 string
+        function toBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result.split(',')[1]);
+                reader.onerror = error => reject(error);
+            });
+        }
+
+        // Initial translation on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateLanguageSelection('italiano');
+        });
+    </script>
+</body>
+</html>

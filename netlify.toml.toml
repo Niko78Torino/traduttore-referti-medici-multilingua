@@ -1,0 +1,17 @@
+# File: netlify.toml
+
+[build]
+  # Specifica la cartella che Netlify deve pubblicare.
+  # Se il tuo index.html è nella root, non serve specificarla, ma è buona norma.
+  publish = "." 
+  
+[functions]
+  # Specifica la cartella dove Netlify troverà le tue serverless functions.
+  directory = "netlify/functions/"
+
+# È necessario specificare il runtime di Node.js per le funzioni.
+# 'node-fetch' v2 richiede Node 16 o inferiore. Per versioni più recenti, servirebbe 'node-fetch' v3.
+# Usiamo una versione compatibile e ampiamente supportata.
+[functions."*"]
+  node_bundler = "esbuild"
+  node_version = 16
